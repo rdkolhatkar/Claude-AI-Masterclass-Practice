@@ -1,0 +1,57 @@
+Open the Git Bash and Execute the below commnds:
+
+1) mkdir Claude-AI-Masterclass-Practice
+2) cd Claude-AI-Masterclass-Practice
+3) git init
+4) touch README.md
+5) touch .gitignore
+6) touch .gitattributes
+7) touch .editorconfig
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Create the initial project structure with Git Bash
+
+1) mkdir -p 01-Claude-AI-Basics
+2) mkdir -p 02-Prompt-Engineering
+3) mkdir -p 03-Claude-API
+4) mkdir -p 04-Claude-Code
+5) mkdir -p 05-MCP
+6) mkdir -p 06-AI-Agents
+7) mkdir -p 07-Automation
+8) mkdir -p 08-Projects
+9) mkdir -p docs
+10) mkdir -p resources
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+One Git Bash command to create all above directories
+
+1) mkdir -p 01-Claude-AI-Basics 02-Prompt-Engineering 03-Claude-API 04-Claude-Code 05-MCP 06-AI-Agents 07-Automation 08-Projects docs resources
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Git does not track empty directories. If you want these folders to appear immediately in your GitHub repository, add a .gitkeep file to each:
+
+1) touch 01-Claude-AI-Basics/.gitkeep 02-Prompt-Engineering/.gitkeep 03-Claude-API/.gitkeep 04-Claude-Code/.gitkeep 05-MCP/.gitkeep 06-AI-Agents/.gitkeep 07-Automation/.gitkeep 08-Projects/.gitkeep docs/.gitkeep resources/.gitkeep
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+create a new repository on the command line
+
+1) git init
+2) git add README.md
+3) git commit -m "first commit"
+4) git branch -M main
+5) git remote add origin https://github.com/rdkolhatkar/Claude-AI-Masterclass-Practice.git
+6) git push -u origin main
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+push an existing repository from the command line
+
+1) git remote add origin https://github.com/rdkolhatkar/Claude-AI-Masterclass-Practice.git
+2) git branch -M main
+3) git push -u origin main
+
+------------------------------------------------------------------------------------------------------------------------------
