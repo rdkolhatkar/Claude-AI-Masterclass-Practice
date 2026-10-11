@@ -1,0 +1,6 @@
+Claud Project CLI commands
+1) Open the Windows Command Prompt and check the claud CLI version using this command : claude --version
+2) Change the Working Directory using command : cd /d "D:\Claude-AI-Masterclass-Practice\01-Claude-AI-Basics\BasicProjectUsingClaudeCLI\Python"
+3) Then use the command "claude" to start the claude CLI server where you can use different MCP servers.
+4) Then you have to select the login method. Select the method "Claude account with Subscription"
+5) Refer the images from the path: D:\Claude-AI-Masterclass-Practice\docs\ImportantImages\ClaudeCLI_SetUp
