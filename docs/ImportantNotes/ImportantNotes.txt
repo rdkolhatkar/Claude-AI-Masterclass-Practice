@@ -12,4 +12,4 @@ Download and install Claude Desktop
 11) Click Edit → New. Add the following path: C:\Users\Ratnakar\.local\bin
 12) Click OK to save the changes. Close and reopen CMD or PowerShell. And then restart the PC
 13) When the installer finishes, open a new terminal window and run "claude --version". A working installation prints a version number.
-14) Refer the images from the path: 
+14) Refer the images from the path: D:\Claude-AI-Masterclass-Practice\docs\ImportantImages\ClaudeCLI_SetUp
