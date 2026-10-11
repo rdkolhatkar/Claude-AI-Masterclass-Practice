@@ -1,0 +1,15 @@
+Download and install Claude Desktop
+1) Refer this official document of Anthropic Claud : https://code.claude.com/docs
+2) We can use claud with Termminal, VS code, Desktop and Web
+3) Before installing Claude Code CLI using npm, ensure that Node.js and npm (Node Package Manager) are installed and properly configured on your system.
+4) Keep at least 2 GB free on your C: drive to accommodate Claude Code, automatic updates, and accumulated local data. Your project repositories and any additional tools installed through Claude Code will consume space separately.
+5) For Windows open the command prompt or powershell and run it as administrator.
+6) To install Claude using Powershell use command : irm https://claude.ai/install.ps1 | iex
+7) To install Claude using command prompt use command : curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+8) Once installation is successful, We have to add the Claude Code installation directory to Windows PATH environment variable. 
+9) You should use User Environment Variables (Environment variables for your account), not System Environment Variables. Because Claude Code is installed at location: "C:\Users\Ratnakar\.local\bin\claude.exe"
+10) Press Win + R, type sysdm.cpl, and press Enter. Then Go to Advanced → Environment Variables. And after that Under User variables for Ratnakar, select Path or Click on "Path" variable option and click on Edit button.
+11) Click Edit → New. Add the following path: C:\Users\Ratnakar\.local\bin
+12) Click OK to save the changes. Close and reopen CMD or PowerShell. And then restart the PC
+13) When the installer finishes, open a new terminal window and run "claude --version". A working installation prints a version number.
+14) Refer the images from the path: 
