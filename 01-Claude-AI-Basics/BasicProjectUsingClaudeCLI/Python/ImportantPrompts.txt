@@ -1,0 +1,81 @@
+Basic Prompts :
+------------------------------------------------------------------------------------------------------------------------------------------
+## Prompt 1:
+Read CLAUDE.md and app.py. Tell me what this project does and if there are any problems with the code.
+
+## Prompt 2:
+Fix the division by zero error in app.py. Add proper error handling so the program prints a friendly message instead of crashing.
+
+## Prompt 3:
+Update all four functions in app.py to follow CLAUDE.md standards. Add type hints and a docstring to each function.
+-------------------------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================================
+professional, and structured Prompts
+------------------------------------------------------------------------------------------------------------------------------------------
+Prompt 1: Code Review and Project Analysis
+
+Read and analyze the `CLAUDE.md` and `app.py` files in the current project directory.
+
+**Tasks:**
+1. Explain the overall purpose and functionality of the project.
+2. Describe how the code in `app.py` works, including its main functions and execution flow.
+3. Identify any bugs, logical errors, edge cases, or potential runtime exceptions.
+4. Highlight any code quality, maintainability, or performance issues.
+5. Suggest appropriate improvements and explain how they would benefit the project.
+
+**Instructions:**
+- Follow the project guidelines defined in `CLAUDE.md`.
+- Provide a structured explanation with clear findings and recommendations.
+- Do not modify any existing files. This task is strictly for code analysis and review.
+-------------------------------------------------------------------------------------------------------------------------------------------
+Prompt 2: Fix the Division-by-Zero Bug in a Separate File
+
+Based on the previous code analysis, fix the division-by-zero bug identified in `app.py`.
+
+**Tasks:**
+1. Create a new Python file named `myApp.py` in the same directory as `app.py`.
+2. Use the existing `app.py` implementation as the reference.
+3. Fix the division-by-zero bug by implementing appropriate input validation and error handling.
+4. Preserve all existing functionality and behavior, except where changes are necessary to fix the bug.
+5. Ensure the updated code follows Python best practices and the project guidelines in `CLAUDE.md`.
+
+**Important Constraints:**
+- Do not modify, rename, delete, or overwrite the existing `app.py` file.
+- Implement all required code changes exclusively in `myApp.py`.
+- Do not introduce unnecessary dependencies.
+
+**Expected Output:**
+- A new `myApp.py` file containing the corrected implementation.
+- A brief explanation of the changes made and how the division-by-zero bug was resolved.
+- Instructions for running the updated application.
+----------------------------------------------------------------------------------------------------------------------------------
+Prompt 3: Create and Execute Unit Tests for myApp.py
+
+Create comprehensive unit tests to validate the functionality of `myApp.py`, including the division-by-zero bug fix.
+
+**Tasks:**
+1. Analyze the functions and logic implemented in `myApp.py`.
+2. Create a separate test file named `test_myApp.py`.
+3. Use Python's built-in `unittest` framework unless `CLAUDE.md` specifies a different testing framework.
+4. Write unit tests covering:
+   - Normal input values and expected results.
+   - Division by zero.
+   - Positive and negative numbers.
+   - Zero and other boundary values.
+   - Invalid inputs and relevant edge cases.
+   - Existing functionality to prevent regressions.
+5. Execute the unit tests and identify any failures.
+6. If tests fail due to defects in `myApp.py`, fix those defects and rerun the tests.
+
+**Important Constraints:**
+- Do not modify the original `app.py` file.
+- Keep application logic in `myApp.py` and test cases in `test_myApp.py`.
+- Follow the project guidelines defined in `CLAUDE.md`.
+- Ensure the tests verify the expected error-handling behavior rather than assuming a particular implementation.
+
+**Expected Output:**
+- A complete `test_myApp.py` file.
+- Test execution results showing passed, failed, or skipped tests.
+- A brief explanation of each test scenario.
+- A summary of any issues discovered and fixes applied.
+- If tests cannot be executed, clearly explain why instead of claiming they passed.
