@@ -1,4 +1,4 @@
-Download and install Claude Desktop
+Download and install Claude CLI
 1) Refer this official document of Anthropic Claud : https://code.claude.com/docs
 2) We can use claud with Termminal, VS code, Desktop and Web
 3) Before installing Claude Code CLI using npm, ensure that Node.js and npm (Node Package Manager) are installed and properly configured on your system.
@@ -14,3 +14,8 @@ Download and install Claude Desktop
 13) When the installer finishes, open a new terminal window and run "claude --version". A working installation prints a version number.
 14) Refer the images from the path: D:\Claude-AI-Masterclass-Practice\docs\ImportantImages\ClaudeCLI_SetUp
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Download and install Claude Desktop
+1) Referthis official document of Anthropic Claud : https://code.claude.com/docs/en/overview#desktop-app
+2) From there download the "Claude Setup.exe"
+3) Then launch the .exe file it will start the Claud Desktop installation
+4) Once installation is completed then you can launch the claude desktop app and connect all your GitHub repositories.
