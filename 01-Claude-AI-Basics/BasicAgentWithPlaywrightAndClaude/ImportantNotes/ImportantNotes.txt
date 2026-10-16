@@ -1,0 +1,32 @@
+An MCP server is a small program that exposes tools, data, or actions to an AI model through the Model Context Protocol (MCP), an open standard for connecting AI assistants to outside systems.
+
+A) How it works:
+
+Think of MCP as a common language that lets an AI talk to other apps. It has three parts:
+
+1) MCP server: a small helper program that connects to one app, like GitHub, Google Drive, Slack, or a database. It tells the AI what it can offer:
+   ->  Tools: things the AI can do, like “create an issue” or “search a database”
+   ->  Resources: things the AI can read, like files or records
+   ->  Prompts: ready-made instructions the AI can reuse
+2) MCP client: the part inside the AI app (like the Claude app or a code editor) that connects to these servers.
+3) The AI model: decides which tool to use and when, and the client does the actual work.
+
+A simple way to picture it is a phone charger. Before USB‑C, every phone needed its own charger. MCP is like USB‑C for AI: each app builds one MCP server, and any AI that supports MCP can plug into it.
+
+B) Who created it:
+
+Anthropic, the company behind Claude, created MCP in November 2024 and made it free for anyone to use. In December 2025, they handed it over to the Linux Foundation, a neutral group, so no single company controls it.
+
+C) Which AI works with it:
+
+Claude was the first AI to support MCP, and it works across all Claude apps and tools.
+
+Today, many other companies use it too:
+
+OpenAI (ChatGPT)
+Google (Gemini)
+Microsoft (Copilot and VS Code)
+Coding tools like Cursor, Windsurf, and Zed
+
+In one line: MCP is a standard way for AI to connect with other apps. Anthropic created it, and now almost every major AI supports it.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
