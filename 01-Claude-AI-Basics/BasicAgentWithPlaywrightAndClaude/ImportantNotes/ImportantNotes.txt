@@ -30,3 +30,10 @@ Coding tools like Cursor, Windsurf, and Zed
 
 In one line: MCP is a standard way for AI to connect with other apps. Anthropic created it, and now almost every major AI supports it.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Browser Automation using MCP server
+1) In this test we are going to use the PlayWright MCP server 
+2) It is created by Microsoft : https://github.com/microsoft/playwright-mcp
+3) We will provide the MCP configuration using JSON format and LLM (Claude) is intelligent to check the MCP server from it's owm config.json 
+4) LLM (Claude) will start the MCP server in the local system using the config file and input commands
+5) Now we have to provide appropriate Prompt n plain english and LLM will use MCP protocol to communicate with browser 
+6) MCP server exposes the set of tools and functions which we have to specify for our test 
