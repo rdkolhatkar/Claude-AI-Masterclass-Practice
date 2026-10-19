@@ -1,0 +1,19 @@
+Create a Travel Budget Manager / Travel Budget Tracker application using claude
+1) Open the folder in Command Prompt with command : cd /d "D:\Claude-AI-Masterclass-Practice\01-Claude-AI-Basics\TravelBudgetManagerApp"
+2) Then check if claude development environment exists or not.
+3) To check if claude development environment exists, use command : dir D:\ /s /b /ad | findstr /i "\\claudeenv$"
+4) If it finds nothing, the environment doesn’t exist yet, so create it and then activate it.
+5) To create and activate development environment use following commands:
+      -> I) cd ..
+      -> II) D:
+      -> III) cd D:\Claude-AI-Masterclass-Practice\01-Claude-AI-Basics
+      -> IV) python -m venv claudeenv
+      -> V) cd TravelBudgetManagerApp
+      -> VI) ..\claudeenv\Scripts\activate.bat
+      -> VII) Important Note: Do not create the environment inside C:\Users, which is a protected system folder, so Windows won’t let you create things there.
+6) After executing "..\claudeenv\Scripts\activate.bat" this command inside the "TravelBudgetManagerApp" folder open vs code using command : code .   
+7) Create "Claude.md" file inside the folder "D:\Claude-AI-Masterclass-Practice\01-Claude-AI-Basics\TravelBudgetManagerApp"
+8) You have to write details about the Project Structure, Coding guidelines, Application Instructions, Data Storage instructions, Testing Guidelines, List of the files which are Off-Limits for Claude and Notes for Claude Code, inside the Claude.md 
+9) Then write your Prompt in detail:
+   Example: Read CLAUDE.md carefully and tell me: what project are we building, what files you will need to create and what coding standards will you follow throughout this project?
+   

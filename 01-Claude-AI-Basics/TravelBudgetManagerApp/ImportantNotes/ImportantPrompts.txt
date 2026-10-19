@@ -1,0 +1,14 @@
+## Prompt 1:
+Read CLAUDE.md carefully and tell me: what project are we building, what files will you need to create, and what coding standards will you follow throughout this project?
+
+## Prompt 2:
+Create storage.py. This module handles saving and loading trip data. It needs two functions: one to load all trips from trips_data.json (return an empty list if the file does not exist), and one to save the full list of trips back to trips_data.json. Follow all standards in CLAUDE.md.
+
+## Prompt 3:
+Create tracker.py. This is the core logic module. It needs three functions: add_trip (takes trip name, destination, and budget, adds a new trip and saves it), add_expense (takes a trip name, description, and amount, finds the right trip, appends the expense with today's date, and saves), and get_summary (takes a trip name and returns a dict with total budget, total spent, remaining budget, and the full expense list). Read storage.py first so your style matches exactly.
+
+## Prompt 4:
+Create display.py. This module handles all terminal output. It needs two functions: print_summary (takes the summary dict from get_summary and prints a nicely formatted trip report) and print_all_trips (takes a list of trips and prints them as a numbered list with name and destination). Read tracker.py and storage.py first so the style matches.
+
+## Prompt 5:
+Create main.py. This is the entry point. Show a menu with four options: 1 Add a new trip, 2 Log an expense, 3 View trip summary, 4 Exit. Use a loop so the menu keeps showing until the user picks Exit. Use the functions from tracker.py and display.py. No business logic in main.py — only menu and user input handling.
