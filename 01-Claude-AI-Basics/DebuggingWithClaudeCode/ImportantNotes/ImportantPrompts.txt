@@ -1,0 +1,5 @@
+## Prompt 1:
+I ran calculator.py and got a total trip cost of $22,500,000 but the inputs were flight=$500, hotel=$300, food=$150. The total should be around $950. Look at the calculate_total_cost function in calculator.py and explain why it is giving the wrong answer.
+
+## Prompt 2:
+Fix the calculate_total_cost function. It should add the three costs together, not multiply them.
