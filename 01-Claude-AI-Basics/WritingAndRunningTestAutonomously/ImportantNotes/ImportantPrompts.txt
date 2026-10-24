@@ -1,0 +1,18 @@
+Prompt 1:
+Read CLAUDE.md and booking.py. Then create tests/test_booking.py with happy path tests for all five functions. Use pytest — not unittest. Test each function with one clear, valid input and assert the expected output. Follow all testing standards in CLAUDE.md. Add a descriptive name to each test.
+
+Prompt 2:
+Add edge case tests to tests/test_booking.py. Write tests for these specific scenarios: calculate_total_price with nights=0 (should raise ValueError), calculate_total_price with guests=0 (should raise ValueError), apply_seasonal_discount with month=0 (should raise ValueError), apply_seasonal_discount with month=13 (should raise ValueError), get_price_category with a negative price (should raise ValueError), and calculate_tax with an unknown country name like 'mars' (should raise ValueError). Use pytest.raises() for each one.
+
+Prompt 3:
+The tests show that calculate_total_price does not raise a ValueError when nights=0 or guests=0. Fix calculate_total_price in booking.py to raise a ValueError with a clear message if nights is 0 or less, or if guests is 0 or less. Do not change any other function.
+
+Prompt 4:
+The tests show that apply_seasonal_discount crashes with a KeyError when month=0 or month=13. Fix apply_seasonal_discount in booking.py to raise a ValueError with a clear message if month is not between 1 and 12 inclusive.
+
+Prompt 5:
+The tests show that calculate_tax silently returns 0.0 for unknown country names. Fix calculate_tax in booking.py to raise a ValueError with a clear message if the country name is not in the TAX_RATES dictionary.
+
+Prompt 6:
+The tests show that get_price_category returns 'budget' silently for negative prices. Fix get_price_category in booking.py to raise a ValueError with a clear message if total_price is negative.
+

@@ -1,4 +1,7 @@
 # calculator.py — Trip Cost Calculator
+# To Run this file: python calculator.py or python -m unittest calculator_test.py
+# python 01-Claude-AI-Basics/DebuggingWithClaudeCode/python/tests/calculator.py
+# Also run the tests in calculator_test.py to verify correctness.
 # This file contains intentional bugs for the Lecture 6.4 debugging demo.
 # Do NOT fix these manually — use Claude Code in VS Code!
 
@@ -8,33 +11,35 @@ import math
 # ── Bug 1: Wrong operator — uses multiplication instead of addition ──────────
 def calculate_total_cost(flight: float, hotel: float, food: float) -> float:
     """Calculate the total cost of a trip from individual components."""
-    return flight * hotel * food          # BUG: should be flight + hotel + food
+    return flight + hotel + food
 
 
 # ── Bug 2: Division by zero — no check when num_people is 0 ─────────────────
 def cost_per_person(total_cost: float, num_people: int) -> float:
     """Calculate the cost per person for a group trip."""
-    return total_cost / num_people        # BUG: crashes if num_people is 0
+    if num_people <= 0:
+        raise ValueError(f"num_people must be greater than 0, got {num_people}")
+    return total_cost / num_people
 
 
 # ── Bug 3: Wrong variable name — uses 'budgt' instead of 'budget' ───────────
 def is_within_budget(total_cost: float, budget: float) -> bool:
     """Return True if total cost is within the given budget."""
-    return total_cost <= budgt            # BUG: NameError — 'budgt' is not defined
+    return total_cost <= budget
 
 
 # ── Bug 4: Wrong return type — returns a string instead of a float ──────────
 def apply_discount(total_cost: float, discount_percent: float) -> float:
     """Apply a percentage discount and return the discounted total."""
     discounted = total_cost - (total_cost * discount_percent / 100)
-    return str(discounted)               # BUG: returns str, should return float
+    return discounted
 
 
 # ── Bug 5: Off-by-one — loop misses the last day ────────────────────────────
 def calculate_daily_budget(total_budget: float, num_days: int) -> list:
     """Return a list of equal daily budgets across the trip duration."""
     daily = total_budget / num_days
-    return [daily for _ in range(num_days - 1)]   # BUG: should be range(num_days)
+    return [daily for _ in range(num_days)]
 
 
 # ── Main runner ───────────────────────────────────────────────────────────────

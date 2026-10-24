@@ -1,0 +1,23 @@
+## Prompt 1:
+Read CLAUDE.md and report.py carefully. Then give me a technical debt audit of report.py. List every coding problem you find, explain why each one is a problem, and tell me what the fix should be. Do not change any code yet — just audit.
+
+## Prompt 2:
+Refactor step 1: Fix all the bad variable names in report.py. In the doReport function, rename every single-letter or abbreviated variable to a clear, descriptive name. For example: n should become trip_name, c should become total_cost, dy should become num_days, p should become num_people, cpp should become cost_per_person, dpb should become daily_budget. Do not change any logic — only rename variables.
+
+## Prompt 3:
+Refactor step 2: Remove the two global variables totalSpent and tripCount from report.py. Instead of using globals, make the doReport function return the cost of the trip as a float. Then in the main block, accumulate the total by summing the return values. Update printSummary to accept total_spent and trip_count as parameters instead of reading globals.
+
+## Prompt 4:
+Refactor step 3: Add type hints to every function in report.py. Each parameter and return value must have a type annotation. The trip list contains dicts — use list[dict] as the type for any parameter that accepts a list of trips. Follow the type hint standards in CLAUDE.md.
+
+## Prompt 5:
+Refactor step 4: Add a proper docstring to every function in report.py. Each docstring should describe what the function does, what its parameters are, and what it returns. Replace the existing single-line comments inside functions — they are not real docstrings. Follow the CLAUDE.md standards.
+
+## Prompt 6:
+Refactor step 5: The doReport function does too many things at once — it calculates costs, determines a warning level, and prints output all in the same function. Split it into three smaller functions: calculate_trip_stats (takes a trip dict, returns a dict with cost_per_person and daily_budget), get_warning_level (takes total_cost as a float, returns a warning string based on the cost level), and print_trip_report (takes the trip dict and the stats dict, prints the formatted output). Update the main loop to call all three in sequence.
+
+## Prompt 7:
+Refactor step 6: Two final cleanups. First, the warning thresholds 1000, 2000, and 3000 are magic numbers — replace them with named constants at the top of the file: LOW_COST_THRESHOLD = 1000, HIGH_COST_THRESHOLD = 2000, VERY_HIGH_COST_THRESHOLD = 3000. Second, rename CalcAvg to calculate_average_cost and getMostExpensive to get_most_expensive_trip to follow consistent snake_case naming as required in CLAUDE.md.
+
+## Prompt 8:
+The refactoring is complete. Now create tests/test_report.py with unit tests for the three new focused functions: calculate_trip_stats, get_warning_level, and calculate_average_cost. For get_warning_level write tests for all three warning levels and one test for a cost below the low threshold. Use Python's unittest module and do not write to any files during tests.
