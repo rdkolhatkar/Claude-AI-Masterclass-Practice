@@ -1,0 +1,207 @@
+=====================================================================
+  MYSQL QUERIES - MultiAgentAutomationWorkflow DATABASE
+=====================================================================
+
+This file contains:
+  1. Create the schema (database)
+  2. Create the Customers table
+  3. Create the Orders table (with Foreign Key)
+  4. Insert 5 dummy records into Customers and Orders
+  5. Delete a specific row from each table
+  6. Update / modify a specific value in each table
+  7. Delete all records from each table
+  8. Alter / modify constraints on each table
+
+
+---------------------------------------------------------------------
+1. CREATE THE SCHEMA
+---------------------------------------------------------------------
+
+CREATE SCHEMA IF NOT EXISTS MultiAgentAutomationWorkflow;
+
+-- Select the schema so that all following statements run inside it
+USE MultiAgentAutomationWorkflow;
+
+
+---------------------------------------------------------------------
+2. CREATE TABLE: Customers
+---------------------------------------------------------------------
+-- Fields: unique_Id, name, city, age
+
+CREATE TABLE IF NOT EXISTS Customers (
+    unique_Id   INT           NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(100)  NOT NULL,
+    city        VARCHAR(100)  NOT NULL,
+    age         INT           NOT NULL,
+    CONSTRAINT pk_customers PRIMARY KEY (unique_Id),
+    CONSTRAINT chk_customers_age CHECK (age > 0 AND age <= 150)
+);
+
+
+---------------------------------------------------------------------
+3. CREATE TABLE: Orders
+---------------------------------------------------------------------
+-- Fields: order_Id, customer_Id, subject, company, order_date
+-- Foreign Key: customer_Id REFERENCES Customers(unique_Id)
+
+CREATE TABLE IF NOT EXISTS Orders (
+    order_Id     INT           NOT NULL AUTO_INCREMENT,
+    customer_Id  INT           NOT NULL,
+    subject      VARCHAR(200)  NOT NULL,
+    company      VARCHAR(150)  NOT NULL,
+    order_date   DATE          NOT NULL,
+    CONSTRAINT pk_orders PRIMARY KEY (order_Id),
+    CONSTRAINT fk_orders_customer
+        FOREIGN KEY (customer_Id)
+        REFERENCES Customers (unique_Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- Note: ON DELETE CASCADE means deleting a customer also deletes that
+-- customer's orders. Remove it if you prefer to block such deletes instead.
+
+
+---------------------------------------------------------------------
+4. INSERT 5 DUMMY RECORDS
+---------------------------------------------------------------------
+
+-- 4a. Insert into Customers (must be done FIRST because Orders depends on it)
+INSERT INTO Customers (name, city, age) VALUES
+    ('Aarav Sharma',   'Pune',      28),
+    ('Priya Verma',    'Mumbai',    34),
+    ('Rahul Mehta',    'Bangalore', 25),
+    ('Sneha Kapoor',   'Delhi',     41),
+    ('Vikram Singh',   'Hyderabad', 30);
+
+-- 4b. Insert into Orders (references the customers above via customer_Id)
+INSERT INTO Orders (customer_Id, subject, company, order_date) VALUES
+    (1, 'Laptop Purchase',        'Dell India',       '2026-01-10'),
+    (2, 'Office Chairs',          'Godrej Interio',   '2026-02-14'),
+    (3, 'Cloud Hosting Plan',     'AWS',              '2026-03-05'),
+    (4, 'Software License',       'Microsoft',        '2026-04-22'),
+    (5, 'Network Equipment',      'Cisco Systems',    '2026-05-18');
+
+-- Verify the inserted data
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+
+
+---------------------------------------------------------------------
+5. DELETE A SPECIFIC ROW FROM EACH TABLE
+---------------------------------------------------------------------
+
+-- 5a. Delete a specific row from Orders (order_Id = 3)
+DELETE FROM Orders
+WHERE order_Id = 3;
+
+-- 5b. Delete a specific row from Customers (unique_Id = 5)
+-- Because of ON DELETE CASCADE, any Orders rows for customer 5 are removed too.
+DELETE FROM Customers
+WHERE unique_Id = 5;
+
+-- Verify
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+
+
+---------------------------------------------------------------------
+6. UPDATE / MODIFY A SPECIFIC VALUE OR ROW IN EACH TABLE
+---------------------------------------------------------------------
+
+-- 6a. Update the city of the customer whose unique_Id = 2
+UPDATE Customers
+SET city = 'Chennai'
+WHERE unique_Id = 2;
+
+-- 6b. Update the subject and company of the order whose order_Id = 1
+UPDATE Orders
+SET subject = 'Laptop Purchase - Upgraded',
+    company = 'Lenovo'
+WHERE order_Id = 1;
+
+-- Verify
+SELECT * FROM Customers WHERE unique_Id = 2;
+SELECT * FROM Orders    WHERE order_Id  = 1;
+
+
+---------------------------------------------------------------------
+7. DELETE ALL RECORDS FROM EACH TABLE
+---------------------------------------------------------------------
+-- Orders depends on Customers through a foreign key, so delete the
+-- child table (Orders) first, then the parent table (Customers).
+
+-- 7a. Delete all rows from Orders (child table)
+DELETE FROM Orders;
+
+-- 7b. Delete all rows from Customers (parent table)
+DELETE FROM Customers;
+
+-- Optional: reset AUTO_INCREMENT counters so IDs start again from 1
+ALTER TABLE Orders    AUTO_INCREMENT = 1;
+ALTER TABLE Customers AUTO_INCREMENT = 1;
+
+-- Note: TRUNCATE TABLE Orders; TRUNCATE TABLE Customers; also empties
+-- tables and resets AUTO_INCREMENT, but it cannot be used on a table
+-- referenced by a foreign key unless FOREIGN_KEY_CHECKS is disabled:
+--   SET FOREIGN_KEY_CHECKS = 0;
+--   TRUNCATE TABLE Orders;
+--   TRUNCATE TABLE Customers;
+--   SET FOREIGN_KEY_CHECKS = 1;
+
+-- Verify (both should return 0 rows)
+SELECT COUNT(*) AS remaining_customers FROM Customers;
+SELECT COUNT(*) AS remaining_orders    FROM Orders;
+
+
+---------------------------------------------------------------------
+8. ALTER / MODIFY CONSTRAINTS ON EACH TABLE
+---------------------------------------------------------------------
+
+-- 8a. Customers: add a UNIQUE constraint on name + city combination
+ALTER TABLE Customers
+    ADD CONSTRAINT uq_customers_name_city UNIQUE (name, city);
+
+-- 8b. Customers: change the age CHECK constraint (drop old, add new)
+ALTER TABLE Customers
+    DROP CHECK chk_customers_age;
+
+ALTER TABLE Customers
+    ADD CONSTRAINT chk_customers_age CHECK (age >= 18 AND age <= 100);
+
+-- 8c. Customers: make city have a default value
+ALTER TABLE Customers
+    ALTER COLUMN city SET DEFAULT 'Unknown';
+
+-- 8d. Orders: change the foreign key behaviour
+--     (drop the existing FK first, then re-create it)
+ALTER TABLE Orders
+    DROP FOREIGN KEY fk_orders_customer;
+
+ALTER TABLE Orders
+    ADD CONSTRAINT fk_orders_customer
+        FOREIGN KEY (customer_Id)
+        REFERENCES Customers (unique_Id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE;
+
+-- 8e. Orders: make order_date default to today's date
+ALTER TABLE Orders
+    ALTER COLUMN order_date SET DEFAULT (CURRENT_DATE);
+
+-- 8f. Orders: add an index on customer_Id to speed up joins
+CREATE INDEX idx_orders_customer_id ON Orders (customer_Id);
+
+-- Verify table structure and constraints
+SHOW CREATE TABLE Customers;
+SHOW CREATE TABLE Orders;
+
+-- Check constraint details from information_schema
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME
+FROM information_schema.TABLE_CONSTRAINTS
+WHERE TABLE_SCHEMA = 'MultiAgentAutomationWorkflow';
+
+
+=====================================================================
+  END OF FILE
+=====================================================================

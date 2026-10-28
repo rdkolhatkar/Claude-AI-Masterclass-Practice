@@ -1,0 +1,20 @@
+MySQL Database Automation Using MCP server
+1) In this test we are going to use the MySQL MCP Server
+2) Referance Link : https://github.com/designcomputer/mysql_mcp_server
+3) Open Command Prompt (CMD) and execute these command : pip --version 
+4) If pip is not recognized by command prompt after above command is executed then Install Python, pip is normally bundled with Python.
+5) If Python works but pip is unavailable, then run command : python -m ensurepip --upgrade
+6) Then install mysql-mcp-server using pip command : "pip install mysql-mcp-server"  OR  "pip3 install mysql-mcp-server" 
+7) After installing the mysql_mcp_server find the installation path with command : "pip show mysql-mcp-server"
+8) Now after this we have to install "uv"
+9) uv is a very fast Python package and project manager developed by Astral. It can replace several tools, including pip, pipx, virtualenv, and tools used to manage Python versions.
+10) To install uv in windows, Open Command Prompt and run "pip install uv" OR in MAC "pip3 install uv"
+12) Find the uv installation path using command: "pip show uv"
+13) And to find the uv executable path use command : "where uv" in windows and "which uv" in MAC
+14) If "where uv" shows 'Could not find files for the given pattern(s)' then add python Scripts directory to Windows Path environment variable so it can run uv from any CMD directory.
+15) After uv Path environment variable is set, open new Windows Command Pompt and run command "where uv" this time it will show the results.
+16) Now after the above steps install MySQL in your system. Set Up the username and password for root account.
+17) Then create Schema and tables over which our agent is going to perform its operations.
+18) Now add "config.json"4 file in claude development tools with details of the MySQL database.
+
+
