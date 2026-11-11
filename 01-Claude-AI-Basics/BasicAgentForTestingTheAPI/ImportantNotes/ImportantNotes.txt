@@ -1,0 +1,25 @@
+API Testing with Claude and Rest API MCP server
+1) In this test we are going to test the Rest API with Claude
+2) Referance Link : "https://github.com/dkmaker/mcp-rest-api" 
+3) Close VS Code and Cline, and any terminal running an MCP server.
+4) End leftover Node processes using command: "taskkill /F /IM node.exe"
+5) Remove the broken package if exists: rmdir /s /q "%APPDATA%\npm\node_modules\dkmaker-mcp-rest-api"
+6) Clear the cache and install with a longer timeout: npm cache clean --force
+7) Then run the command:  npm install -g dkmaker-mcp-rest-api --fetch-timeout=600000
+8) Verify again if Rest API mcp is installed: npm list -g dkmaker-mcp-rest-api
+9) If the above step failed then run the below commands for clean up and reinstall
+   -> I) Stop leftover Node processes: taskkill /F /IM node.exe
+   -> II) Remove the broken entry. Run this only if the folder exists; otherwise skip it: rmdir /s /q "%APPDATA%\npm\node_modules\dkmaker-mcp-rest-api"
+   -> III) Clear the cache and reinstall with a longer timeout: 
+           => A) npm cache clean --force
+           => B) npm install -g dkmaker-mcp-rest-api --fetch-timeout=600000
+   -> IV) Once The install succeeded. Next, confirm the server file exists: dir "%APPDATA%\npm\node_modules\dkmaker-mcp-rest-api\build"
+10) Install "File System MCP Server" so that claude can access the Postman Collection JSON files from our System.
+11) After Installing File System MCP Server in the "claude_desktop_config.json" add the Input file location paths.
+    I) "C:/Users/Ratnakar/Desktop",
+    II)"C:/Users/Ratnakar/AppData/Local/Claude-Data/files-claude",
+    III)"C:/Users/Ratnakar/Documents/Claude/Files/api-data-files"
+12) Now, after installing Rest API mcp and File System MCP, we have to provide base_Url and other header values inside the "claude_desktop_config.json"
+13) Then Execute Below Prompt:
+    Go to "https://rahulshettyacademy.com/client" and click on the "Don't have an account? Register here" after this pull any record from the "Customers" table from our MySQL Schema called "MultiAgentAutomationWorkflow" and register that record as new account. If anything is missing then use your own knowledge and complete the registration. Then read the attached Postman Collection to understand the API contract and make login call with necessary information and confirm if login api call is Success. Postman Collection is present at this path "C:/Users/Ratnakar/Documents/Claude/Files/api-data-files" 
+

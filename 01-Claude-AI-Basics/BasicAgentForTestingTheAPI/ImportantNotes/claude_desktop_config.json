@@ -1,0 +1,178 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "mysql": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:/Users/Ratnakar/AppData/Roaming/Python/Python313/site-packages",
+        "run",
+        "mysql_mcp_server"
+      ],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "Ratanlord@1409",
+        "MYSQL_DATABASE": "multiagentautomationworkflow"
+      }
+    },
+    "filesystem": {
+     "command": "npx",
+     "args": [
+       "-y",
+       "@modelcontextprotocol/server-filesystem",
+       "C:/Users/Ratnakar/Desktop",
+       "C:/Users/Ratnakar/AppData/Local/Claude-Data/files-claude",
+       "C:/Users/Ratnakar/Documents/Claude/Files/api-data-files"
+      ]
+    },
+    "rest-api": {
+     "command": "node",
+     "args": [
+       "C:/Users/Ratnakar/AppData/Roaming/npm/node_modules/dkmaker-mcp-rest-api/build/index.js"
+     ],
+     "env": {
+       "REST_BASE_URL": "https://api.example.com",
+       // Basic Auth
+       "AUTH_BASIC_USERNAME": "your-username",
+       "AUTH_BASIC_PASSWORD": "your-password",
+       // OR Bearer Token
+       "AUTH_BEARER": "your-token",
+       // OR API Key
+       "AUTH_APIKEY_HEADER_NAME": "X-API-Key",
+       "AUTH_APIKEY_VALUE": "your-api-key",
+       // SSL Verification (enabled by default)
+       "REST_ENABLE_SSL_VERIFY": "false", // Set to false to disable SSL verification for self-signed certificates
+       // Response Size Limit (optional, defaults to 10000 bytes)
+       "REST_RESPONSE_SIZE_LIMIT": "10000", // Maximum response size in bytes
+       // Custom Headers (optional)
+       "HEADER_X-API-Version": "2.0",
+       "HEADER_Custom-Client": "my-client",
+       "HEADER_Accept": "application/json"
+     }
+   }
+  },
+  "coworkUserFilesPath": "C:\\Users\\Ratnakar\\Claude",
+  "preferences": {
+    "coworkBrowserToolsEnabled": true,
+    "coworkPreferredBrowser": "built_in",
+    "launchPreviewPersistedWorkspaces": [],
+    "launchPreviewSessionScopedSessions": [],
+    "coworkLegacyRootGrantsPruned": true,
+    "coworkScheduledTasksEnabled": true,
+    "coworkHipaaRestricted": false,
+    "orgWorkAcrossAppsDisabled": false,
+    "ccdScheduledTasksEnabled": true,
+    "httpCacheZstdLatched": true,
+    "userDataFolderAnswer": true,
+    "userDataOutsidePackageAnswer": null,
+    "sidebarMode": "epitaxy",
+    "bypassPermissionsGateByAccount": {
+      "b248510e-2fe5-4e08-81e5-6b72336dfdad": false
+    },
+    "coworkWebSearchEnabled": true,
+    "coworkModelAutoFallbackByAccount": {
+      "b248510e-2fe5-4e08-81e5-6b72336dfdad": true
+    },
+    "remoteToolsDeviceName": "desktop-1lq61c0",
+    "epitaxyPrefs": {
+      "desktop-frame.paneStore.v1": {
+        "state": {
+          "extraPanesByMode": {},
+          "colWeightsByMode": {},
+          "rowSplit": 0.5,
+          "draftNonce": 0,
+          "lastPrimaryCodeSession": {
+            "id": "local_f5f6c2d3-699f-460f-8eb3-e0adcf09734e",
+            "type": "local"
+          }
+        },
+        "version": 4
+      },
+      "starred-local-code-sessions": [],
+      "starred-cowork-spaces": [],
+      "starred-session-groups": [],
+      "starred-local-routines": [],
+      "dframe-group-scopes": {},
+      "dframe-local-slice": {
+        "pinnedOrder": [],
+        "homeProjectsPinnedOrder": []
+      },
+      "dframe-code-sections": {
+        "b248510e-2fe5-4e08-81e5-6b72336dfdad/832baff1-5ccc-4d39-bb68-b59d4ad94e61": {
+          "sections": [
+            {
+              "id": "pinned",
+              "kind": "pinned",
+              "v": 2,
+              "name": "",
+              "order": 0,
+              "sortBy": "recency",
+              "ascending": false,
+              "show": {
+                "metadata": false,
+                "emptyGroups": false,
+                "sideChats": false,
+                "slack": true
+              },
+              "collapsed": false,
+              "shown": true
+            },
+            {
+              "id": "routines",
+              "kind": "routines",
+              "v": 2,
+              "name": "",
+              "order": 1,
+              "sortBy": "recency",
+              "ascending": false,
+              "show": {
+                "metadata": false,
+                "emptyGroups": false,
+                "sideChats": false,
+                "slack": true
+              },
+              "collapsed": true,
+              "shown": false
+            },
+            {
+              "id": "sessions",
+              "kind": "sessions",
+              "v": 2,
+              "name": "",
+              "order": 2,
+              "sortBy": "recency",
+              "ascending": false,
+              "show": {
+                "metadata": false,
+                "emptyGroups": false,
+                "sideChats": false,
+                "slack": true
+              },
+              "collapsed": false,
+              "shown": true
+            }
+          ],
+          "migratedFrom": 1,
+          "prefsSeeded": true
+        }
+      },
+      "ccd-sessions-filter": {
+        "state": {
+          "selectedProjects": []
+        },
+        "version": 0
+      },
+      "epitaxy-auto-default-notice-seen.b248510e-2fe5-4e08-81e5-6b72336dfdad": true,
+      "ultrathinkAvailable.claude-haiku-5-5.b248510e-2fe5-4e08-81e5-6b72336dfdad": false
+    },
+    "userDataMoveAtNextLaunch": false,
+    "userDataCarryAtNextLaunch": false
+  }
+}
