@@ -1,0 +1,14 @@
+Reading and Writing Excel data with Claude and MCP server
+1) In this test we are going to automate read and write operations for Excel sheet data using Claude and MCP
+2) Referance Link : https://github.com/negokaz/excel-mcp-server
+3) Configure the MCP server details in "claude_desktop_config.json" file and resart the claude
+4) Here we don't need to worry about how claude will read the Excel file because for that we already have an existing MCP called "File System MCP Server"
+5) If you don't have the File System MCP then Install "File System MCP Server" so that claude can access the Excel files from the local System.
+6) Now Create a new excel file called "Test.xlsx" in the location where your File System MCP Path is configured with claude. In our case I/O path is "C:/Users/Ratnakar/Documents/Claude/Files/api-data-files"
+7) Now everything is ready and you can give the Promot with instructions of Excel operation. Refer below example.
+   Example: 
+    Go to "https://rahulshettyacademy.com/client" and click on the "Don't have an account? Register here" after this pull any record from the "Customers" table from our MySQL Schema called "MultiAgentAutomationWorkflow" and register that record as new account.
+    If anything is missing then use your own knowledge and complete the registration. Then read the attached Postman Collection to understand the API contract and make login call with necessary information and confirm if login api call is Success.
+    Postman Collection is present at this path "C:/Users/Ratnakar/Documents/Claude/Files/api-data-files"
+    Once login call is successfully confirmed then finally you have to write the registered details of new user into an Excel file called "Test.xlsx" with appropriate coloumn names.
+    "Test.xlsx" is present at this path "C:/Users/Ratnakar/Documents/Claude/Files/api-data-files" 
