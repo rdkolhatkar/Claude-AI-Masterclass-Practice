@@ -1,0 +1,135 @@
+SKILLS, PLUGINS AND HOOKS: A BEGINNER'S GUIDE
+=============================================
+
+These three things are ways to teach Claude to work your way.
+
+- Skill: a recipe card. It tells Claude how to do one specific job.
+- Hook: an automatic alarm. It runs a fixed action at a set moment, every time, without anyone asking.
+- Plugin: a toolbox. It bundles skills, hooks, and other pieces so you can install them all at once.
+
+
+1. SKILLS
+---------
+
+A skill is a set of written instructions that Claude reads when a task matches it. You write it once, and Claude follows it whenever that kind of task comes up.
+
+Why it's useful: Without a skill, you have to explain the same thing every time. For example, "Make me a PowerPoint in our company style: blue headings, a logo on the last slide, and no more than five bullets per slide." A skill saves that instruction permanently.
+
+What a skill looks like: A skill is a folder with a main file called SKILL.md. The top part says what the skill is for, and the rest holds the instructions.
+
+    weekly-report/
+    └── SKILL.md
+
+Example SKILL.md:
+
+    ---
+    name: weekly-report
+    description: Use when the user asks for a weekly status report
+    ---
+
+    # Weekly Report
+
+    1. Start with a 3-line summary at the top.
+    2. List completed tasks under "Done".
+    3. List blockers under "Needs Help", with a named owner for each.
+    4. Keep the whole report under one page.
+
+Now when you type, "Write this week's status report from my notes," Claude sees that the description matches and follows the steps in order.
+
+Real examples of skills:
+- A skill that explains how to build Excel files with formulas
+- A skill that checks your writing against your company's style guide
+- A skill that formats meeting notes into a standard template
+
+Key point: A skill is just instructions. It doesn't run on its own. Claude reads it and does the work.
+
+
+2. HOOKS
+--------
+
+A hook is a rule that says: "When event X happens, automatically run action Y." Hooks run as real commands on your computer, so you use them for things that must happen every time, without relying on Claude to remember.
+
+Common events hooks can react to:
+- Before Claude uses a tool (for example, before it edits a file)
+- After Claude uses a tool
+- When you send a message
+- When Claude finishes its response
+
+Example: You want code automatically formatted every time Claude edits a file. You'd set up a hook like this in a settings file:
+
+    {
+      "hooks": {
+        "PostToolUse": [
+          {
+            "matcher": "Edit|Write",
+            "hooks": [
+              { "type": "command", "command": "prettier --write \"$FILE_PATH\"" }
+            ]
+          }
+        ]
+      }
+    }
+
+In plain words: "After Claude edits or writes a file, run the formatter on that file." Claude doesn't have to remember, because the hook always runs.
+
+Other hook examples:
+- Block Claude from deleting anything inside a sensitive folder
+- Send yourself a notification when a long task finishes
+- Log every action Claude takes for an audit trail
+
+Key difference from skills: A skill is a suggestion Claude reads and follows. A hook is a guaranteed automatic action.
+
+
+3. PLUGINS
+----------
+
+A plugin is a package that bundles several extras together so they're easy to install, share, and update. A plugin can contain:
+- Skills
+- Hooks
+- Slash commands (shortcuts you type, such as /review)
+- Connectors to outside apps such as Google Drive or Slack
+- Sub-agents, which are helper versions of Claude that handle specific jobs
+
+Example: A company might create a "Sales Team" plugin. Installing it gives every salesperson the same proposal-writing skill, a /pipeline command that summarizes deals, a hook that checks customer data before sharing, and a connection to the CRM. Each salesperson installs one plugin instead of setting up five things by hand.
+
+Analogy: If skills are individual recipes and hooks are kitchen timers, a plugin is the complete starter kit a restaurant hands you on day one.
+
+
+HOW THEY FIT TOGETHER
+---------------------
+
+Skill
+  What it is:   Written instructions
+  When it runs: When a matching task comes up
+  Who triggers: Claude decides to use it
+  Good for:     Repeating a way of working
+
+Hook
+  What it is:   Automatic action on an event
+  When it runs: Every time its event happens
+  Who triggers: The event triggers it
+  Good for:     Rules that must never be skipped
+
+Plugin
+  What it is:   A bundle of the above
+  When it runs: When installed
+  Who triggers: You install it
+  Good for:     Sharing a full setup with others
+
+
+QUICK GLOSSARY
+--------------
+
+- SKILL.md: The main instruction file inside a skill folder.
+- Frontmatter: The short section at the top of SKILL.md between --- lines, which holds the name and description.
+- Slash command: A shortcut you type, starting with /.
+- Connector (MCP): A link that lets Claude read from or act in an outside app. It's often confused with skills, but it gives Claude access to a service, while a skill gives Claude instructions.
+- Sub-agent: A helper Claude that handles one part of a larger job.
+
+
+WHERE TO START AS A BEGINNER
+----------------------------
+
+1. Start with skills. Notice a task you repeat, write down your instructions for it, and save them as a skill.
+2. Try a plugin next. Install one that matches your job, and see what it adds.
+3. Use hooks last. They change how Claude behaves automatically, so learn them once you're comfortable with the other two.

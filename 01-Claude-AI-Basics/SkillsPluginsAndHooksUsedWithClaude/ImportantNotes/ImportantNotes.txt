@@ -1,0 +1,390 @@
+1) What is a skill in claude
+-> A Skill is a folder with "SKILL.md" file that teaches Claude Code a new trick - no installation, n API key is required for this
+-> There are two parts of SKILL.md first is a "YAML formatter" which tells claude when to use this skill. Second is "Markdown body" which tells claude what to do once this skill is selected.
+-> There are three types of skills, first is Built-In Skill, second is Plugin Skills and third is Custom Skills
+-> Built-In Skill come preinstalled with claude code, no setup needed, just type slash "/" and use the skill. For example: /simplify . /debug . /batch . /loop . /claude-api etc.
+-> Plugin Skills are marketplace Add-ons made by anthropic, installed mnually as per the user's requirement. One command to install, same format as custom. Example: document-skills (PDF, DOCX, XLSX) . example-skills
+-> Custom skills are created by user. we build them. Written by user in ".claude/skills/" folder. These are Team-shareable via git commit. Example: code-explainer . csv-summary . code-review
+-> Custom skills are of two types, first is "Single File Custom Skill" and second is "Multi File Custom Skill".
+-> Single File Custom Skill : Contains just one SKILL.md with pure markdown instructions
+-> Multi File Custom Skill : Contains SKILL.md with "Scripts" and "referances". Example : "csv-summary/" folder and inside it we have 3 files, 1) SKILL.md 2) scripts/summarize.py 3) referances/csv-gotchas.md
+-> For Multi File Custom Skill "scripts" are used for deterministic output which is same everytime, while "referances" are extra documents loaded only when error occurs.
+
+WHO CAN INVOKE A SKILL?
+=======================
+
+A skill can be triggered in two ways:
+- The USER types a slash command such as /weekly-report
+- CLAUDE decides by itself that the skill matches the task, based on its description
+
+Two settings in a skill's SKILL.md control this (in the frontmatter, between the --- lines).
+
++----------------------------+-------------------------+----------------------------------------------+
+| Setting                    | Who invokes             | Use for                                      |
++----------------------------+-------------------------+----------------------------------------------+
+| Default (no flag)          | User + Claude           | Most skills like this. Useful any time the   |
+|                            | (automatic)             | task fits, and you can also call it yourself |
+|                            |                         | with /skill-name.                            |
+|                            |                         | Example: a skill that formats meeting notes. |
++----------------------------+-------------------------+----------------------------------------------+
+| disable-model-invocation:  | User only               | Skills with side effects you want to control |
+| true                       | (manual, with /name)    | yourself, such as deploying code, sending a  |
+|                            |                         | message, or deleting files. Claude will not  |
+|                            |                         | run these on its own.                        |
+|                            |                         | Example: a /deploy-to-staging skill.         |
++----------------------------+-------------------------+----------------------------------------------+
+| user-invocable: false      | Claude only             | Background knowledge that Claude should      |
+|                            | (automatic)             | apply when relevant, but that is not useful  |
+|                            |                         | as a command. It is hidden from the / menu.  |
+|                            |                         | Example: a skill explaining the company's    |
+|                            |                         | coding style rules.                          |
++----------------------------+-------------------------+----------------------------------------------+
+
+
+EXAMPLE SKILL HEADERS
+---------------------
+
+1. Default (no flag): nothing extra is needed.
+
+    ---
+    name: meeting-notes
+    description: Use when the user asks to format meeting notes
+    ---
+
+2. Manual only: Claude will not trigger it automatically.
+
+    ---
+    name: deploy-to-staging
+    description: Deploys the current branch to the staging server
+    disable-model-invocation: true
+    ---
+
+3. Claude only: the skill is hidden from the / menu.
+
+    ---
+    name: code-style-rules
+    description: Company coding style rules for any code written
+    user-invocable: false
+    ---
+
+
+QUICK RULE OF THUMB
+-------------------
+
+- Not sure? Use the default (no flag).
+- If a mistake would be costly or the action is risky, add disable-model-invocation: true.
+- If it's background knowledge and not a command, add user-invocable: false.
+
+=========================================================================================================================================================================================================================
+
+2) What is a Plugin
+-> A plugin is a bundle of pre-built extensions (skills, commands, agents, hooks, MCP servers) installed with one command
+-> Claude plugins are officially auto available, no setup is needed. Browse at claude.com.plugins or via link : "https://claude.com/marketplace/plugins"
+-> To install these plugins using CLI use command : /plugin list
+-> To install a specific plugin use command: /plugin install <name>@claude-plugins-official 
+-> To uninstall a specific pluin use command: /plugin uninstall <name>@claude-plugins-official 
+-> Whenever you install or uninstall any plugin always restart the claude 
+
+=========================================================================================================================================================================================================================
+
+3) What is a Hook 
+-> A hook is a shell command that Claude Code runs automatically at a specific moments, no typing, no asking and no exceptions. 
+-> SKILL.md and CLAUDE.md are just suggestions but Hooks are guarantees. It always runs based on those events. 
+-> Hooks are defined in ".claude/settings.json"
+-> The three events you need which covers almost 90% real world hook use cases. First is Pre-Tooling Second Post-Tooling and Third is Notification
+-> Pre-Tooling also called as "PreToolUse" which runs before actual tool runs. exit code 2 blocks it. Example: Block rm -rf, protect .env files etc. 
+-> Post-Tooling also called as "PostToolUse" which runs after tool runs. cannot block the tool. Example: Auto-Format, log edits and cleanup
+-> Notifications used for confirmation process. Example: Alerts, Desktop notifications etc.
+
+HOOKS IN CLAUDE CODE: EXAMPLES GUIDE
+=====================================
+
+WHAT IS A HOOK?
+---------------
+
+A hook is a shell command that Claude Code runs automatically at specific moments.
+No typing, no asking, and no exceptions.
+
+- SKILL.md and CLAUDE.md are suggestions. Claude reads them and tries to follow them.
+- Hooks are guarantees. They always run when their event happens.
+- Hooks are defined in .claude/settings.json.
+
+THE THREE EVENTS YOU NEED
+-------------------------
+
+These three events cover about 90% of real-world hook use cases:
+
+1. PreToolUse   - runs BEFORE a tool runs. Exit code 2 blocks it.
+2. PostToolUse  - runs AFTER a tool runs. Cannot block the tool.
+3. Notification - runs when Claude needs your attention (confirmation, alerts).
+
+EVENT 1: PreToolUse (runs before the tool)
+------------------------------------------
+
+- Runs before the actual tool runs.
+- Exit code 2 BLOCKS the tool.
+- Use it for: blocking rm -rf, protecting .env files, and similar safety rules.
+
+Script: .claude/hooks/block-dangerous.sh
+
+    #!/bin/bash
+    # Runs BEFORE Claude uses a tool
+
+    input=$(cat)
+    cmd=$(echo "$input" | jq -r '.tool_input.command // empty')
+    file=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+
+    # Block rm -rf
+    if echo "$cmd" | grep -qE 'rm -rf'; then
+      echo "Blocked: 'rm -rf' is not allowed in this project." >&2
+      exit 2          # exit code 2 = BLOCK the tool
+    fi
+
+    # Protect .env files
+    if [[ "$(basename "$file")" == .env* ]]; then
+      echo "Blocked: .env files are protected." >&2
+      exit 2
+    fi
+
+    exit 0            # exit 0 = allow the tool to run
+
+Make it executable once:
+
+    chmod +x .claude/hooks/block-dangerous.sh
+
+Settings: .claude/settings.json
+
+    {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash|Edit|Write",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-dangerous.sh"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+What happens: If Claude tries to run "rm -rf build/", the hook exits with code 2.
+The command never runs, and Claude sees the message:
+"Blocked: 'rm -rf' is not allowed in this project."
+
+EVENT 2: PostToolUse (runs after the tool)
+------------------------------------------
+
+- Runs after the tool has already run.
+- Cannot block the tool, because the action is already done.
+- Use it for: auto-formatting, logging edits, and cleanup.
+
+Script: .claude/hooks/format-and-log.sh
+
+    #!/bin/bash
+    # Runs AFTER Claude edits or writes a file. It cannot undo the edit.
+
+    input=$(cat)
+    file=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+
+    [ -z "$file" ] && exit 0
+
+    # 1. Auto-format the file (only if prettier is installed)
+    if command -v prettier >/dev/null 2>&1; then
+      prettier --write "$file" >/dev/null 2>&1
+    fi
+
+    # 2. Log the edit with a timestamp
+    echo "$(date '+%F %T') edited $file" >> "$CLAUDE_PROJECT_DIR/.claude/edit-log.txt"
+
+    exit 0
+
+Settings (add to the same settings.json):
+
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-and-log.sh"
+          }
+        ]
+      }
+    ]
+
+What happens: Every time Claude edits a file, it gets formatted automatically, and a
+line like this is added to edit-log.txt:
+
+    2026-11-18 21:40 edited src/app.js
+
+EVENT 3: Notification (alerts and confirmations)
+------------------------------------------------
+
+- Runs when Claude needs your attention, such as when it is waiting for permission.
+- No matcher is needed.
+- Use it for: desktop alerts, so you can work in another window while a task runs.
+
+Settings (add to the same settings.json):
+
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' 'Claude needs your attention'"
+          }
+        ]
+      }
+    ]
+
+On Linux this uses notify-send. On macOS, use this command instead:
+
+    osascript -e 'display notification "Claude needs your attention" with title "Claude Code"'
+
+THE COMPLETE .claude/settings.json
+----------------------------------
+
+    {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash|Edit|Write",
+            "hooks": [
+              { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-dangerous.sh" }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Edit|Write",
+            "hooks": [
+              { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-and-log.sh" }
+            ]
+          }
+        ],
+        "Notification": [
+          {
+            "hooks": [
+              { "type": "command", "command": "notify-send 'Claude Code' 'Claude needs your attention'" }
+            ]
+          }
+        ]
+      }
+    }
+
+EXIT CODES AT A GLANCE
+----------------------
+
+- 0  : Success. The tool is allowed to run (PreToolUse).
+- 2  : BLOCK. The tool does not run, and stderr is sent to Claude (PreToolUse only).
+- Other codes: An error is shown, but the tool is not blocked.
+
+GOOD TO KNOW
+------------
+
+- Hooks are guarantees, but not magic. They run every time their event fires, but you can
+  turn them off in settings, and they run with your own permissions. Only use hook scripts
+  you have read and understand.
+- Test before relying on them. Try a harmless command like "rm -rf test-folder" to confirm
+  the block works. You can also use the /hooks command in Claude Code to see which hooks
+  are active.
+- Scripts must be executable (chmod +x) and need jq installed for the JSON parsing shown here.
+=============================================================================================================================================================================================
+SKILLS vs PLUGINS vs HOOKS: TABULAR COMPARISON
+==============================================
+
+Quick summary:
+- Skill:  instructions Claude reads and follows when a task matches.
+- Plugin: a package that bundles skills, hooks, commands and more for easy install and sharing.
+- Hook:   a shell command that runs automatically on a specific event. It is a guarantee.
+
+
+MAIN COMPARISON
+---------------
+
++--------------------+----------------------------+----------------------------+----------------------------+
+| Aspect             | Skill                      | Plugin                     | Hook                       |
++--------------------+----------------------------+----------------------------+----------------------------+
+| What it is         | Written instructions       | A bundle of skills, hooks, | A shell command or script  |
+|                    | (SKILL.md)                 | commands, connectors, etc. | that runs on an event      |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Main purpose       | Teach Claude how to do a   | Share and install a full   | Enforce rules or automate  |
+|                    | specific job              | setup in one step          | actions that must happen   |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Made of            | A folder with SKILL.md     | Folder with a manifest and | A script file plus a       |
+|                    | and optional files         | the skills/hooks inside it | config entry in settings   |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Where it lives     | Skill folder (personal,    | Installed from a           | Defined in                 |
+|                    | project or plugin)         | marketplace or folder      | .claude/settings.json      |
++--------------------+----------------------------+----------------------------+----------------------------+
+| How it is         | Claude decides based on    | You install it once; its   | The event fires            |
+| triggered          | the description, or the    | parts then work as their   | automatically              |
+|                    | user types /skill-name     | own type describes         |                            |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Who controls it    | Claude (suggestion)        | You (install and remove)   | Automatic (guarantee)      |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Is it guaranteed   | No. Claude may or may not  | No. Depends on which parts | Yes. Runs every time its   |
+| to run?            | use it                     | it contains                | event happens              |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Can it block       | No                         | Only through the hooks it  | Yes (PreToolUse, exit      |
+| an action?         |                            | contains                   | code 2)                    |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Needs typing       | No (optional /command)     | No, after installing       | No                         |
+| to run?            |                            |                            |                            |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Written in         | Plain text / Markdown      | Folder with config and     | Shell, Python, Node or     |
+|                    |                            | files                      | any command-line script    |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Needs coding       | No, just clear writing     | Not usually, unless it     | Yes, basic scripting       |
+| knowledge?         |                            | includes hooks             | helps                      |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Shareable with     | Yes (copy the folder)      | Yes (main purpose)         | Yes (copy script and       |
+| others?            |                            |                            | config)                    |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Typical example    | "Format meeting notes      | "Sales Team" bundle with   | Auto-format after every    |
+|                    | like this"                 | skills, a command and a    | edit, or block rm -rf      |
+|                    |                            | hook                       |                            |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Good for           | Repeating a way of working | Onboarding a team or       | Safety rules and           |
+|                    |                            | distributing a setup       | automatic follow-up work   |
++--------------------+----------------------------+----------------------------+----------------------------+
+| Risk level         | Low                        | Medium (includes code and  | Medium to high (runs       |
+|                    |                            | hooks, so review it)       | commands on your machine)  |
++--------------------+----------------------------+----------------------------+----------------------------+
+
+
+EVENTS AND TIMING (HOOKS ONLY)
+------------------------------
+
++------------------+-----------------------------------------------+
+| Hook event       | When it runs                                  |
++------------------+-----------------------------------------------+
+| PreToolUse       | Before a tool runs. Can block it (exit 2).    |
++------------------+-----------------------------------------------+
+| PostToolUse      | After a tool runs. Cannot block it.           |
++------------------+-----------------------------------------------+
+| Notification     | When Claude needs your attention.             |
++------------------+-----------------------------------------------+
+
+
+WHICH ONE SHOULD I USE?
+-----------------------
+
+Ask yourself:
+
+1. Do I want Claude to know HOW to do something?      -> Use a SKILL
+2. Do I want something to ALWAYS happen automatically? -> Use a HOOK
+3. Do I want to SHARE a whole setup with a team?       -> Use a PLUGIN
+
+Often they work together: a plugin can contain both skills and hooks.
+
+
+A SIMPLE ANALOGY
+----------------
+
+- Skill  = a recipe card. The cook reads it and follows it.
+- Hook   = a kitchen smoke alarm. It goes off automatically, every time.
+- Plugin = the complete starter kit a restaurant gives a new cook: recipes, timers and tools together.
