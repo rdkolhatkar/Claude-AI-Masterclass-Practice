@@ -1,0 +1,11 @@
+order_id,customer,region,amount,discount
+1001,Asha,North,250.00,10
+1002,Ben,South,180.50,
+1003,Chen,East,420.75,15
+1004,Divya,West,95.00,5
+1005,Ethan,North,310.20,
+1006,Farah,South,150.00,20
+1007,Gita,East,275.40,
+1008,Hari,West,500.00,25
+1009,Ira,North,75.50,0
+1010,Jay,South,220.00,10

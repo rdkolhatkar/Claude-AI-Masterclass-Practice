@@ -1,0 +1,5 @@
+Steps to Create the Claude Skills
+1) Create a folder called ".claude" in your project source code directory.
+2) Then inside that ".claude" create folder called "skills".
+3) Now inside that "skills" folder you can create the sub folders as per your designated skill.
+4) For example you can create a folder with name as "code-explainer" and inside this folder we will be having specific instructions on how to explain code.
