@@ -1,0 +1,12 @@
+Steps to install Claude code Plugins
+1) Unlike skills we cannot directly create the Plugins.
+2) We have to navigte to the Claude Code official documentation for installing plugins.
+3) Navigate to website : ""https://code.claude.com/docs/en/plugins/install
+4) After this click on the option called "Anthropic's marketplaces"
+5) After clicking on above option it will navigate to the another page where you have to search the option called "Claude Marketplace" and click on it. 
+6) It will take you to the official claude marketplace. You also use this url insted of above steps : "https://claude.com/marketplace/plugins"
+7) Then click on any Plugin which you desire. For Example: "Code Simplifier" 
+8) After this open the Windows command Prompt or Terminal inside the VS code. 
+9) After opening the terminal in VS code type command "claude" it will launch the claude CLI inside your terminal.
+10) To check the existing or defaut plugins use command: "/plugin" it will show you the default and existing plugins.
+11) To escape the plugin tab and go back to the origina terminal press the escape key on the keyboard. "Esc" 
