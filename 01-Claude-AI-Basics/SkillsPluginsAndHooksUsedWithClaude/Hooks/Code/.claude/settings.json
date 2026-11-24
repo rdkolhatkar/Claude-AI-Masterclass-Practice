@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date)] file edited\" >> hook-log.txt"
+          },
+          {
+            "type": "command",
+            "command": "npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -qE 'rm[[:space:]]+-rf' && { echo 'Blocked: rm -rf is not allowed by project policy.' >&2; exit 2; } || exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -q '\\.env' && { echo 'Blocked: .env files are protected and cannot be read or modified by Claude.' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}

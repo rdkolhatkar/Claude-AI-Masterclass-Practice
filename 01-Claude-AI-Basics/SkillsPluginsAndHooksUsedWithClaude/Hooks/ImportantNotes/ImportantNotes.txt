@@ -1,0 +1,350 @@
+Steps to create a Hook in Claude Code
+1) Create a ".claude" folder in your parent repository path or at your project Code path.
+2) Then inside that ".claude" folder create a file called "settings.json" 
+3) Now first hook we are going to create is 'Log every file edit' (PostToolUsed) 
+4)
+
+********************************************************************************************************************************************
+=====================================================================
+        CLAUDE CODE HOOKS - EXPLAINED FOR FRESHERS
+=====================================================================
+ 
+This guide explains the hooks configuration below, line by line, and
+every shell command it uses.
+ 
+ 
+---------------------------------------------------------------------
+PART 1: WHAT IS A HOOK?
+---------------------------------------------------------------------
+ 
+When Claude Code works on your project, it uses "tools", for example:
+ 
+    Read   -> open and read a file
+    Edit   -> change part of an existing file
+    Write  -> create a file or overwrite it completely
+    Bash   -> run a terminal command
+ 
+A HOOK is a small shell command that runs AUTOMATICALLY at a set
+moment, such as just before or just after Claude uses one of these
+tools.
+ 
+A real-life comparison:
+  - A security guard checks your bag BEFORE you enter a building.
+    That is like a "PreToolUse" hook.
+  - A cleaner tidies the room AFTER you leave it.
+    That is like a "PostToolUse" hook.
+ 
+Why use hooks?
+  - To ENFORCE rules (for example "never delete everything").
+  - To AUTOMATE chores (for example "always format code after editing").
+  - To KEEP RECORDS (for example "log every time a file changes").
+ 
+Hooks are useful because they ALWAYS run. You don't have to rely on
+Claude remembering an instruction.
+ 
+ 
+---------------------------------------------------------------------
+PART 2: THE OVERALL STRUCTURE
+---------------------------------------------------------------------
+ 
+The configuration is written in JSON. Its shape looks like this:
+ 
+  "hooks"
+    |
+    |-- "PostToolUse"  (runs AFTER a tool finishes successfully)
+    |      |
+    |      |-- matcher "Edit|Write"
+    |             |-- hook 1: write a line to a log file
+    |             |-- hook 2: format the edited file with Prettier
+    |
+    |-- "PreToolUse"   (runs BEFORE a tool is used)
+           |
+           |-- matcher "Bash"
+           |      |-- hook: block "rm -rf" commands
+           |
+           |-- matcher "Read|Edit|Write"
+                  |-- hook: block access to .env files
+ 
+Key words:
+ 
+  matcher  -> Decides WHICH tools the hook applies to.
+              The "|" symbol means OR.
+              "Edit|Write" means "when the tool is Edit OR Write".
+ 
+  type     -> "command" means "run this as a shell command".
+ 
+  command  -> The actual shell command that runs.
+ 
+ 
+---------------------------------------------------------------------
+PART 3: HOW A HOOK SEES WHAT CLAUDE IS DOING
+---------------------------------------------------------------------
+ 
+When a hook runs, Claude Code passes it details about the tool call
+as JSON text through "standard input" (stdin). A simplified example
+of what a Bash hook might receive:
+ 
+  {
+    "tool_name": "Bash",
+    "tool_input": { "command": "rm -rf build/" }
+  }
+ 
+So a command such as "grep" (which reads stdin when you give it no
+file name) can search this text for dangerous patterns.
+ 
+ 
+---------------------------------------------------------------------
+PART 4: THE EXIT CODE (HOW A HOOK SAYS "ALLOW" OR "BLOCK")
+---------------------------------------------------------------------
+ 
+Every command finishes with a number called the EXIT CODE.
+ 
+  exit 0  -> "Everything is fine." Claude continues normally.
+  exit 2  -> "BLOCK this." In a PreToolUse hook, the tool is stopped,
+             and the error message (written to stderr) is shown to
+             Claude so it knows why and can try something else.
+  others  -> Treated as a non-blocking error. The tool still runs.
+ 
+Remember: exit 2 = stop.
+ 
+ 
+=====================================================================
+PART 5: HOOK-BY-HOOK EXPLANATION
+=====================================================================
+ 
+ 
+---------------------------------------------------------------------
+HOOK 1 (PostToolUse, Edit|Write): LOG EVERY FILE EDIT
+---------------------------------------------------------------------
+ 
+  echo "[$(date)] file edited" >> hook-log.txt
+ 
+WHEN: After Claude successfully edits or writes any file.
+ 
+WHAT EACH PART DOES:
+ 
+  echo "..."       Prints the text inside the quotes.
+ 
+  $(date)          "Command substitution". It runs the "date" command
+                   and puts the result here. Example result:
+                   Tue Nov 24 20:30:00 IST 2026
+ 
+  [ ... ]          Plain square brackets, only for neat formatting.
+ 
+  >>               APPENDS the text to the end of a file.
+                   (A single > would ERASE the file and write fresh.
+                   Using >> keeps the old lines.)
+ 
+  hook-log.txt     The log file. It is created if it doesn't exist.
+ 
+RESULT: hook-log.txt slowly fills with lines like:
+  [Tue Nov 24 20:30:00 IST 2026] file edited
+  [Tue Nov 24 20:31:12 IST 2026] file edited
+ 
+WHY: You get a simple history of when Claude changed files, which is
+useful for auditing and debugging.
+ 
+NOTE: It records WHEN, but not WHICH file was edited.
+ 
+ 
+---------------------------------------------------------------------
+HOOK 2 (PostToolUse, Edit|Write): AUTO-FORMAT THE FILE
+---------------------------------------------------------------------
+ 
+  npx prettier --write "$CLAUDE_TOOL_INPUT_FILE_PATH" 2>/dev/null || true
+ 
+WHEN: After Claude successfully edits or writes any file.
+ 
+WHAT EACH PART DOES:
+ 
+  npx              Runs a Node.js tool without installing it globally.
+ 
+  prettier         A popular code formatter. It fixes indentation,
+                   quotes, spacing and so on, so the code looks
+                   consistent.
+ 
+  --write          Saves the formatted result back into the same file.
+                   (Without it, Prettier only prints the result.)
+ 
+  "$CLAUDE_TOOL_INPUT_FILE_PATH"
+                   A variable that is meant to hold the path of the
+                   file Claude just edited. The quotes keep paths
+                   with spaces working.
+ 
+  2>/dev/null      Throws away error messages.
+                   "2" means the error stream (stderr).
+                   "/dev/null" is a "black hole" that discards
+                   anything sent to it.
+ 
+  || true          "||" means "if the command on the left FAILS,
+                   run the one on the right." "true" always succeeds.
+                   So this hook never reports a failure, even if
+                   Prettier doesn't support that file type
+                   (e.g. a .txt or .py file).
+ 
+WHY: Every file Claude touches stays neatly formatted automatically,
+matching the team's code style.
+ 
+CAUTION FOR LEARNERS: Because 2>/dev/null and || true hide all
+errors, you will never notice if this hook silently stops working.
+Also, check your Claude Code version's documentation: current
+versions send the file path inside the JSON on stdin rather than
+in this variable. A more reliable version reads it from there:
+ 
+  jq -r '.tool_input.file_path' | xargs npx prettier --write
+ 
+  (jq is a tool that extracts values from JSON;
+   xargs passes the extracted path to prettier as an argument.)
+ 
+ 
+---------------------------------------------------------------------
+HOOK 3 (PreToolUse, Bash): BLOCK "rm -rf"
+---------------------------------------------------------------------
+ 
+  grep -qE 'rm[[:space:]]+-rf' && { echo 'Blocked: rm -rf is not allowed by project policy.' >&2; exit 2; } || exit 0
+ 
+WHEN: BEFORE Claude runs any terminal (Bash) command.
+ 
+BACKGROUND: "rm -rf" deletes files and folders permanently, with no
+confirmation and no recycle bin. One wrong path can wipe a project.
+ 
+WHAT EACH PART DOES:
+ 
+  grep             Searches text for a pattern. Here the text is the
+                   JSON (from stdin) describing the Bash command.
+ 
+  -q               "Quiet": print nothing, just report found or not
+                   found through the exit code
+                   (0 = found, 1 = not found).
+ 
+  -E               Use "extended" regular expressions (allows "+").
+ 
+  'rm[[:space:]]+-rf'
+                   The pattern to look for:
+                     rm           the letters "rm"
+                     [[:space:]]  any space or tab character
+                     +            "one or more" of the previous item
+                     -rf          the letters "-rf"
+                   So it matches "rm -rf", "rm   -rf", and so on.
+ 
+  &&               "AND THEN": run the next part ONLY if grep
+                   FOUND the pattern.
+ 
+  { ... ; }        Groups several commands together.
+ 
+  echo '...' >&2   Prints the message to stderr (the error stream).
+                   ">&2" means "send this to stream 2 (stderr)".
+                   Claude reads this message to learn why it was
+                   blocked.
+ 
+  exit 2           Blocks the command (see Part 4).
+ 
+  || exit 0        If grep did NOT find the pattern, exit 0 and allow
+                   the command.
+ 
+THE LOGIC IN PLAIN ENGLISH:
+  "If the command contains rm -rf, print a warning and BLOCK it.
+   Otherwise, ALLOW it."
+ 
+WHY: It is a safety net against accidental mass deletion.
+ 
+LIMITATION: It only catches the exact form "rm -rf". These variations
+would slip through:
+    rm -fr folder
+    rm -r -f folder
+    rm --recursive --force folder
+A safety hook is a helpful guard rail, not a complete security system.
+ 
+ 
+---------------------------------------------------------------------
+HOOK 4 (PreToolUse, Read|Edit|Write): PROTECT .env FILES
+---------------------------------------------------------------------
+ 
+  grep -q '\\.env' && { echo 'Blocked: .env files are protected and cannot be read or modified by Claude.' >&2; exit 2; } || exit 0
+ 
+WHEN: BEFORE Claude reads, edits or writes any file.
+ 
+BACKGROUND: A ".env" file usually stores SECRETS such as passwords,
+API keys and database credentials. These should never be exposed or
+changed by accident.
+ 
+WHAT EACH PART DOES:
+ 
+  grep -q          Search quietly (same as Hook 3).
+ 
+  '\\.env'         The pattern. In JSON, "\\" is how you write ONE
+                   backslash, so the shell actually receives \.env
+                   In regular expressions a plain "." means
+                   "any character", so the backslash makes it a
+                   real dot. The pattern therefore matches ".env"
+                   exactly, not "xenv" or "aenv".
+ 
+  && { ... }       If found: print the "Blocked" message to stderr
+                   and exit 2 to stop the tool.
+ 
+  || exit 0        If not found: allow the tool.
+ 
+THE LOGIC IN PLAIN ENGLISH:
+  "If Claude is about to touch anything that mentions .env, BLOCK it.
+   Otherwise, ALLOW it."
+ 
+WHY: It keeps secrets out of Claude's view and prevents accidental
+changes to configuration that the app depends on.
+ 
+LIMITATION: It searches the WHOLE tool input, not just the file name.
+So it may also block:
+  - harmless files such as ".env.example" or ".envrc"
+  - writing a normal file whose CONTENT mentions ".env"
+    (for example a README that says "copy .env.example to .env")
+It is better to be too strict than too loose with secrets, but
+expect occasional false alarms.
+ 
+ 
+=====================================================================
+PART 6: QUICK REFERENCE OF COMMANDS AND SYMBOLS
+=====================================================================
+ 
+  COMMAND / SYMBOL   MEANING
+  ----------------   ------------------------------------------------
+  echo               Print text
+  date               Show the current date and time
+  $( ... )           Run a command and use its output here
+  >>                 Append output to a file
+  >                  Overwrite a file with output
+  2>/dev/null        Discard error messages
+  >&2                Send output to the error stream (stderr)
+  npx                Run a Node.js package without installing it
+  prettier --write   Format a code file and save it
+  grep               Search text for a pattern
+  grep -q            Search silently, report via exit code only
+  grep -E            Use extended regular expressions
+  [[:space:]]+       One or more spaces/tabs (regex)
+  \.                 A literal dot (regex)
+  &&                 Run the next command only if the previous one
+                     SUCCEEDED
+  ||                 Run the next command only if the previous one
+                     FAILED
+  { ...; }           Group commands together
+  true               A command that always succeeds
+  exit 0             Finish successfully (allow)
+  exit 2             Finish with code 2 (block, in PreToolUse)
+ 
+ 
+=====================================================================
+PART 7: SUMMARY
+=====================================================================
+ 
+  HOOK   WHEN                   TOOLS              PURPOSE
+  ----   --------------------   ----------------   ------------------
+  1      After tool runs        Edit, Write        Log each edit
+  2      After tool runs        Edit, Write        Auto-format code
+  3      Before tool runs       Bash               Block "rm -rf"
+  4      Before tool runs       Read, Edit, Write  Protect .env files
+ 
+The two PostToolUse hooks are HELPERS (record keeping and tidying up).
+The two PreToolUse hooks are GUARDS (they stop risky actions).
+ 
+Golden rule: PreToolUse + exit 2 = "Stop, you are not allowed to do
+this."
+=====================================================================
+ 
