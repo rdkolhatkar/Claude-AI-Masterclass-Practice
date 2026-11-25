@@ -2,7 +2,9 @@ Steps to create a Hook in Claude Code
 1) Create a ".claude" folder in your parent repository path or at your project Code path.
 2) Then inside that ".claude" folder create a file called "settings.json" 
 3) Now first hook we are going to create is 'Log every file edit' (PostToolUsed) 
-4)
+4) In secnd hook we are going to create a setting called 'Claude shoud block any [rm -rf] operation which is used to remove the file or directory' (PreToolUse)
+5) The PreToolUse will block any operation which user has promped for deletion of file or folder.  
+6) Now we have to add one more PreToolUse which will restrict the caude from reading the environment configurations like userName, password from ".env" file.
 
 ********************************************************************************************************************************************
 =====================================================================
